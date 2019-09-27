@@ -40,9 +40,13 @@ public class CityController {
 
     @PostMapping
     @ApiOperation(value = "Add a city")
-    public void createCity(@RequestBody City city) {
-        if(!Objects.equals(null,city)){
+    public ResponseEntity <City> createCity(@RequestBody City city) {
+        if(!Objects.equals(null,city) && !Objects.equals(null,city.getName())){
             cityDao.create(city);
+            return new ResponseEntity<>(city, HttpStatus.CREATED);
+        } else
+        {
+            return new ResponseEntity<>(city, HttpStatus.BAD_REQUEST);
         }
 
     }
