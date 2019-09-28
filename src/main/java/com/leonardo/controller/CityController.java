@@ -94,7 +94,7 @@ public class CityController {
             return new ResponseEntity<>(city, HttpStatus.OK);
         }
     }
-
+    @ApiOperation(value = "Find distance between two cities in KM")
     @GetMapping("/findDistance/{id1}/{id2}")
     public Double getDistance(@PathVariable(required=true) Integer id1, @PathVariable(required=true) Integer id2) {
 

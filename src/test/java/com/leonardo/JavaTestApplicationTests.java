@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class JavaTestApplicationTests {
 
 	private static final String API_ROOT
-			= "http://localhost:8081/city";
+			= "http://localhost:8080/city";
 
 	private City createRandomCity() {
 		City city = new City();
@@ -38,6 +38,15 @@ public class JavaTestApplicationTests {
 				.body(city)
 				.post(API_ROOT);
 		return API_ROOT + "/" + response.jsonPath().get("id");
+	}
+
+	private String createCityForDistanceAsUri(City city1, City city2) {
+		Response response = RestAssured.given()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(city1)
+				.body(city2)
+				.post(API_ROOT);
+		return API_ROOT + "/findDistance/" + city1.getId() + "/" + city2.getId();
 	}
 
 	@Test
@@ -67,7 +76,7 @@ public class JavaTestApplicationTests {
 	}
 
 	@Test
-	public void whenInvalidVityk_thenError() {
+	public void whenInvalidCity_thenError() {
 		City city = createRandomCity();
 		city.setName(null);
 		Response response = RestAssured.given()
@@ -112,4 +121,16 @@ public class JavaTestApplicationTests {
 		response = RestAssured.get(location);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
 	}
+
+	@Test
+	public void findDistance_thenOk() {
+
+		String location = "http://localhost:8080/city/findDistance/3/4";
+		Response response = RestAssured.get(location);
+
+		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+		assertEquals("3570.4827121050007", response.body().print());
+	}
+
+
 }
